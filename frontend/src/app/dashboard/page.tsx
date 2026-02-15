@@ -20,8 +20,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/')
+    // Allow demo access without authentication
+    if (status === 'unauthenticated' && typeof window !== 'undefined') {
+      const isDemoMode = localStorage.getItem('demo-mode')
+      if (!isDemoMode) {
+        router.push('/')
+      }
     }
   }, [status, router])
 

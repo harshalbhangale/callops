@@ -6,6 +6,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
   ],
   callbacks: {
@@ -24,6 +31,8 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/',
+    error: '/', // Redirect errors to home page
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: false, // Disable debug in production
 }
