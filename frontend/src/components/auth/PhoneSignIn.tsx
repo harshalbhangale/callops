@@ -8,7 +8,7 @@ import { Phone, ArrowRight, Loader2 } from 'lucide-react'
 export default function PhoneSignIn() {
   const router = useRouter()
   const [step, setStep] = useState<'phone' | 'otp'>('phone')
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('+91')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -95,13 +95,13 @@ export default function PhoneSignIn() {
                 type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+1234567890"
+                placeholder="+917028167389"
                 className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-primary focus:outline-none text-lg"
                 required
               />
             </div>
             <p className="mt-2 text-xs text-gray-500">
-              Enter with country code (e.g., +1 for US)
+              Enter your 10-digit mobile number
             </p>
           </div>
 
