@@ -3,15 +3,52 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* iPhone 16 Pro Max safe areas */
+    --sat: env(safe-area-inset-top);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    --sar: env(safe-area-inset-right);
+  }
+
   body {
     @apply bg-gray-50 text-gray-800;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Support for iPhone 16 Pro Max notch/Dynamic Island */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Safe area utilities for iPhone 16 Pro Max */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
@@ -50,7 +87,36 @@
   animation: slideIn 0.3s ease-out;
 }
 
-/* Touch-friendly tap targets */
+/* Touch-friendly tap targets - optimized for iPhone 16 Pro Max */
 .tap-target {
-  @apply min-h-[44px] min-w-[44px];
+  @apply min-h-[48px] min-w-[48px];
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iPhone 16 Pro Max specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-specific styles */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Prevent zoom on input focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Smooth scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Landscape orientation for iPhone 16 Pro Max */
+@media screen and (orientation: landscape) and (max-height: 440px) {
+  .hide-landscape {
+    display: none;
+  }
 }

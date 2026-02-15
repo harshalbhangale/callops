@@ -90,14 +90,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header 
         user={session?.user} 
         title="Dashboard"
         subtitle={new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
       />
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-lg mx-auto px-4 py-6 space-y-6 pb-28 safe-bottom">
         {/* Hero Call Button */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-xl"></div>
