@@ -1,0 +1,19 @@
+{
+  "name": "Callops - Build Apps with Your Voice",
+  "short_name": "Callops",
+  "description": "Call our AI and build apps instantly. Deployed to production in minutes.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#7DD3C0",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "72x72 96x96 128x128 144x144 152x152 180x180 192x192 384x384 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
