@@ -2,3 +2,4 @@
 # Voice Processing Update
 # Claude Integration
 # AI Code Gen
+# Database Setup
