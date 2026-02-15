@@ -15,6 +15,26 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Demo number bypass - always accept 123456
+    const isDemoNumber = phoneNumber === '+917028167389'
+    if (isDemoNumber && otp === '123456') {
+      const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'fallback-secret')
+      const token = await new SignJWT({ phoneNumber, type: 'phone' })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('7d')
+        .sign(secret)
+
+      return NextResponse.json({
+        success: true,
+        token,
+        user: {
+          phoneNumber,
+          name: phoneNumber,
+        }
+      })
+    }
+
     const stored = otpStore.get(phoneNumber)
 
     if (!stored) {
