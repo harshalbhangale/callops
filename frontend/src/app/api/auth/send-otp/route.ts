@@ -19,8 +19,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    // Demo OTP for testing - always use 12345 for +917028167389
+    const isDemoNumber = phoneNumber === '+917028167389'
+    const otp = isDemoNumber ? '12345' : Math.floor(100000 + Math.random() * 900000).toString()
     const expiresAt = Date.now() + 5 * 60 * 1000 // 5 minutes
 
     // Store OTP
@@ -33,8 +34,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Send OTP via Twilio
-    if (accountSid && authToken && twilioPhone) {
+    // Send OTP via Twilio (skip for demo number)
+    if (!isDemoNumber && accountSid && authToken && twilioPhone) {
       const client = twilio(accountSid, authToken)
       
       try {
@@ -49,14 +50,14 @@ export async function POST(req: NextRequest) {
         // Continue anyway for development
       }
     } else {
-      console.log(`📱 DEV MODE: OTP for ${phoneNumber} is ${otp}`)
+      console.log(`📱 ${isDemoNumber ? 'DEMO NUMBER' : 'DEV MODE'}: OTP for ${phoneNumber} is ${otp}`)
     }
 
     return NextResponse.json({ 
       success: true, 
-      message: 'OTP sent successfully',
-      // Include OTP in development for testing
-      ...(process.env.NODE_ENV === 'development' && { otp })
+      message: isDemoNumber ? 'Demo OTP: Use code 12345' : 'OTP sent successfully',
+      // Show OTP for demo number or in development
+      ...((isDemoNumber || process.env.NODE_ENV === 'development') && { otp })
     })
   } catch (error: any) {
     console.error('Send OTP error:', error)
