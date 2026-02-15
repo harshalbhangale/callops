@@ -33,10 +33,26 @@ const config: Config = {
       boxShadow: {
         'card': '0 2px 8px rgba(0, 0, 0, 0.04)',
         'card-hover': '0 4px 16px rgba(0, 0, 0, 0.08)',
+        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
       },
       borderRadius: {
         'card': '16px',
       },
+      animation: {
+        'gradient': 'gradient 8s linear infinite',
+      },
+      keyframes: {
+        gradient: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        }
+      }
     },
   },
   plugins: [],

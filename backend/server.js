@@ -15,6 +15,9 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve static files (for SMS tester)
+app.use('/public', express.static('public'));
+
 // Twilio client
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -26,8 +29,27 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Callops Backend API',
     version: '1.0.0',
-    status: 'running'
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      voice: '/api/voice/*',
+      sms: '/api/sms/*',
+      calls: '/api/calls',
+      apps: '/api/apps',
+      stats: '/api/stats',
+      smsTester: '/sms-test'
+    }
   });
+});
+
+// SMS Tester UI
+app.get('/sms-test', (req, res) => {
+  res.sendFile(__dirname + '/public/sms-test.html');
+});
+
+// SMS Monitor UI
+app.get('/sms-monitor', (req, res) => {
+  res.sendFile(__dirname + '/public/sms-monitor.html');
 });
 
 // Health check
@@ -186,6 +208,117 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
+// SMS Routes
+// Send SMS endpoint
+app.post('/api/sms/send', async (req, res) => {
+  const { to, message, from } = req.body;
+
+  if (!to || !message) {
+    return res.status(400).json({
+      error: 'Missing required fields',
+      required: ['to', 'message']
+    });
+  }
+
+  try {
+    const fromNumber = from || process.env.TWILIO_PHONE_NUMBER;
+
+    console.log('📤 Sending SMS:', {
+      from: fromNumber,
+      to,
+      message: message.substring(0, 50) + '...'
+    });
+
+    const twilioMessage = await twilioClient.messages.create({
+      body: message,
+      from: fromNumber,
+      to: to
+    });
+
+    console.log('✅ SMS sent successfully:', twilioMessage.sid);
+
+    res.status(200).json({
+      success: true,
+      messageSid: twilioMessage.sid,
+      status: twilioMessage.status,
+      to: twilioMessage.to,
+      from: twilioMessage.from,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Error sending SMS:', error);
+    res.status(500).json({
+      error: 'Failed to send SMS',
+      message: error.message,
+      code: error.code
+    });
+  }
+});
+
+// Receive SMS webhook
+app.post('/api/sms/incoming', (req, res) => {
+  const { 
+    MessageSid, 
+    From, 
+    To, 
+    Body,
+    NumMedia,
+    MediaUrl0
+  } = req.body;
+
+  console.log('📥 Incoming SMS received:');
+  console.log({
+    messageSid: MessageSid,
+    from: From,
+    to: To,
+    body: Body,
+    hasMedia: NumMedia > 0,
+    timestamp: new Date().toISOString()
+  });
+
+  // Process the message
+  const twiml = new twilio.twiml.MessagingResponse();
+  const bodyLower = Body.toLowerCase().trim();
+  
+  if (bodyLower === 'status') {
+    twiml.message('Your Callops account is active. You have 1 app deployed.');
+  } else if (bodyLower.startsWith('build')) {
+    const appDescription = Body.substring(5).trim();
+    twiml.message(`Got it! I'll start building: "${appDescription}". You'll receive updates shortly.`);
+  } else if (bodyLower === 'help') {
+    twiml.message('Callops SMS Commands:\n• "status" - Check your account\n• "build [description]" - Create a new app\n• "help" - Show this message');
+  } else {
+    twiml.message(`Message received: "${Body}". Reply "help" for commands.`);
+  }
+
+  res.type('text/xml');
+  res.send(twiml.toString());
+});
+
+// SMS status callback
+app.post('/api/sms/status', (req, res) => {
+  const {
+    MessageSid,
+    MessageStatus,
+    To,
+    From,
+    ErrorCode,
+    ErrorMessage
+  } = req.body;
+
+  console.log('📊 SMS Status Update:');
+  console.log({
+    messageSid: MessageSid,
+    status: MessageStatus,
+    to: To,
+    from: From,
+    error: ErrorCode ? { code: ErrorCode, message: ErrorMessage } : null,
+    timestamp: new Date().toISOString()
+  });
+
+  res.status(200).json({ received: true });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err);
@@ -211,6 +344,9 @@ app.listen(PORT, () => {
   console.log('   GET  /health');
   console.log('   POST /api/voice/incoming  (Twilio webhook)');
   console.log('   POST /api/voice/process   (Twilio webhook)');
+  console.log('   POST /api/sms/send        (Send SMS)');
+  console.log('   POST /api/sms/incoming    (Twilio webhook)');
+  console.log('   POST /api/sms/status      (Twilio webhook)');
   console.log('   GET  /api/calls');
   console.log('   GET  /api/apps');
   console.log('   GET  /api/stats');

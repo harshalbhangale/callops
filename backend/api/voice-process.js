@@ -1,4 +1,5 @@
 const twilio = require('twilio');
+const { sendBuildStartedNotification, sendAppReadyNotification, sendBuildErrorNotification } = require('../utils/sms');
 
 // Process speech input from Twilio
 module.exports = async (req, res) => {
@@ -14,7 +15,7 @@ module.exports = async (req, res) => {
     // Acknowledge receipt
     twiml.say({
       voice: 'Polly.Joanna'
-    }, `Got it! I heard you want to build: ${speechResult}. I'm starting to work on it now. Check your WhatsApp for updates!`);
+    }, `Got it! I heard you want to build: ${speechResult}. I'm starting to work on it now. Check your phone for SMS updates!`);
 
     // Log call data
     console.log('💾 Call data:', {
@@ -24,9 +25,18 @@ module.exports = async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
-    // TODO: Process with Claude AI in background
-    // TODO: Send WhatsApp notification
-    // TODO: Generate and deploy app
+    // Send SMS notification in background (don't wait for response)
+    sendBuildStartedNotification(from, speechResult)
+      .then(() => {
+        console.log('✅ Build started SMS sent to:', from);
+        
+        // TODO: Process with Claude AI
+        // TODO: Generate and deploy app
+        // TODO: Send completion notification with sendAppReadyNotification()
+      })
+      .catch(error => {
+        console.error('❌ Error sending SMS:', error.message);
+      });
 
   } else {
     twiml.say({
