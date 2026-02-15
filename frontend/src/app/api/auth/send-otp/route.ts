@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Demo OTP for testing - always use 12345 for +917028167389
+    // Demo OTP for testing - always use 123456 for +917028167389
     const isDemoNumber = phoneNumber === '+917028167389'
-    const otp = isDemoNumber ? '12345' : Math.floor(100000 + Math.random() * 900000).toString()
+    const otp = isDemoNumber ? '123456' : Math.floor(100000 + Math.random() * 900000).toString()
     const expiresAt = Date.now() + 5 * 60 * 1000 // 5 minutes
 
     // Store OTP
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      message: isDemoNumber ? 'Demo OTP: Use code 12345' : 'OTP sent successfully',
+      message: isDemoNumber ? 'Demo OTP: Use code 123456' : 'OTP sent successfully',
       // Show OTP for demo number or in development
       ...((isDemoNumber || process.env.NODE_ENV === 'development') && { otp })
     })
