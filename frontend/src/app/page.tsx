@@ -7,6 +7,7 @@ import { Phone, Sparkles, Zap, Rocket, CheckCircle, ArrowRight } from 'lucide-re
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import GoogleSignIn from '@/components/auth/GoogleSignIn'
+import PhoneSignIn from '@/components/auth/PhoneSignIn'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -116,14 +117,22 @@ export default function Home() {
             Call our AI, describe your app idea, and get a deployed link sent directly to your WhatsApp in minutes.
           </motion.p>
 
-          {/* CTA Button */}
+          {/* Auth Options */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mb-16"
+            className="w-full max-w-md mb-16 space-y-6"
           >
             <GoogleSignIn />
+            
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-px bg-gray-300" />
+              <span className="text-sm text-gray-500 font-medium">OR</span>
+              <div className="flex-1 h-px bg-gray-300" />
+            </div>
+            
+            <PhoneSignIn />
           </motion.div>
 
           {/* Feature badges */}
@@ -287,10 +296,18 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-20 mb-10"
+            className="mt-20 mb-10 w-full max-w-md"
           >
             <p className="text-gray-600 mb-6 text-lg font-medium">Ready to build your next app?</p>
             <GoogleSignIn />
+            
+            <div className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-gray-300" />
+              <span className="text-sm text-gray-500 font-medium">OR</span>
+              <div className="flex-1 h-px bg-gray-300" />
+            </div>
+            
+            <PhoneSignIn />
           </motion.div>
         </div>
       </div>

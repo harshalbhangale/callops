@@ -20,12 +20,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Allow demo access without authentication
-    if (status === 'unauthenticated' && typeof window !== 'undefined') {
-      const isDemoMode = localStorage.getItem('demo-mode')
-      if (!isDemoMode) {
-        router.push('/')
-      }
+    // Check for both Google OAuth and phone auth
+    const phoneToken = typeof window !== 'undefined' ? localStorage.getItem('phone-auth-token') : null
+    
+    if (status === 'unauthenticated' && !phoneToken) {
+      router.push('/')
     }
   }, [status, router])
 
