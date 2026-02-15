@@ -3,3 +3,4 @@
 # Claude Integration
 # AI Code Gen
 # Database Setup
+# Error Handling
