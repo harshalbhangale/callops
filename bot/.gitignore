@@ -1,0 +1,12 @@
+node_modules/
+*.log
+.env
+.local/
+pnpm-store/
+*.db
+.next/
+.vercel/
+.openclaw/
+*.jsonl
+.config/
+__pycache__/
