@@ -7,7 +7,6 @@ import { Phone, Sparkles, Zap, Rocket, CheckCircle, ArrowRight } from 'lucide-re
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import GoogleSignIn from '@/components/auth/GoogleSignIn'
-import PhoneSignIn from '@/components/auth/PhoneSignIn'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -122,27 +121,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mb-16 w-full max-w-md"
+            className="mb-16"
           >
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Sign In</h3>
-                <p className="text-sm text-gray-600">Choose your preferred method</p>
-              </div>
-              
-              {/* Phone OTP Login */}
-              <PhoneSignIn />
-              
-              {/* Divider */}
-              <div className="flex items-center my-6">
-                <div className="flex-1 border-t border-gray-300"></div>
-                <span className="px-4 text-sm text-gray-500">or</span>
-                <div className="flex-1 border-t border-gray-300"></div>
-              </div>
-              
-              {/* Google Login */}
-              <GoogleSignIn />
-            </div>
+            <GoogleSignIn />
           </motion.div>
 
           {/* Feature badges */}

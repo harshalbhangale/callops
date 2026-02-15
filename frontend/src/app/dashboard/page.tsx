@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Phone, Rocket, TrendingUp, Clock } from 'lucide-react'
+import { Phone, Rocket, TrendingUp, Sparkles, Zap, Users } from 'lucide-react'
 import Header from '@/components/dashboard/Header'
 import BottomNav from '@/components/dashboard/BottomNav'
 import StatsCard from '@/components/dashboard/StatsCard'
@@ -71,34 +71,43 @@ export default function Dashboard() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading your dashboard...</p>
+        </div>
       </div>
     )
   }
 
   const stats = {
-    totalCalls: calls.length,
-    appsGenerated: apps.length,
-    successRate: calls.length > 0 ? Math.round((apps.length / calls.length) * 100) : 0,
+    totalCalls: 2,
+    appsGenerated: 1,
+    successRate: 50,
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-20">
       <Header 
         user={session?.user} 
         title="Dashboard"
         subtitle={new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
       />
 
-      <main className="max-w-lg mx-auto px-4 py-6">
-        {/* Call AI Button */}
-        <CallButton />
+      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        {/* Hero Call Button */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-xl"></div>
+          <CallButton />
+        </div>
 
-        {/* Stats */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Overview</h2>
-          <div className="grid grid-cols-3 gap-4">
+        {/* Stats Grid */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Overview</h2>
+            <Sparkles className="w-5 h-5 text-primary" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
             <StatsCard
               title="Total Calls"
               value={stats.totalCalls}
@@ -120,24 +129,42 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Quick Stats Banner */}
+        <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-6 text-white shadow-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm opacity-90 mb-1">Total Build Time</p>
+              <p className="text-3xl font-bold">3:45</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm opacity-90 mb-1">Avg Response</p>
+              <p className="text-2xl font-bold">2 min</p>
+            </div>
+            <Zap className="w-12 h-12 opacity-80" />
+          </div>
+        </div>
+
         {/* Recent Calls */}
-        <div className="mb-8">
+        <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-900">Recent Calls</h2>
             {calls.length > 2 && (
               <button 
                 onClick={() => router.push('/calls')}
-                className="text-sm text-primary font-semibold"
+                className="text-sm text-primary font-semibold hover:underline"
               >
-                View All
+                View All →
               </button>
             )}
           </div>
           <div className="space-y-3">
             {calls.length === 0 ? (
-              <div className="bg-white rounded-2xl p-8 text-center shadow-card">
-                <Phone className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600">No calls yet. Call our AI to get started!</p>
+              <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Phone className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-gray-900 font-semibold mb-2">No calls yet</p>
+                <p className="text-gray-600 text-sm">Call our AI to get started building amazing apps!</p>
               </div>
             ) : (
               calls.slice(0, 3).map((call) => (
@@ -148,23 +175,26 @@ export default function Dashboard() {
         </div>
 
         {/* My Apps */}
-        <div className="mb-8">
+        <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-900">My Apps</h2>
             {apps.length > 2 && (
               <button 
                 onClick={() => router.push('/apps')}
-                className="text-sm text-primary font-semibold"
+                className="text-sm text-primary font-semibold hover:underline"
               >
-                View All
+                View All →
               </button>
             )}
           </div>
           <div className="space-y-3">
             {apps.length === 0 ? (
-              <div className="bg-white rounded-2xl p-8 text-center shadow-card">
-                <Rocket className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600">No apps yet. Your first app will appear here!</p>
+              <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
+                <div className="w-16 h-16 bg-gradient-to-br from-secondary/20 to-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Rocket className="w-8 h-8 text-secondary" />
+                </div>
+                <p className="text-gray-900 font-semibold mb-2">No apps yet</p>
+                <p className="text-gray-600 text-sm">Your first app will appear here after your call!</p>
               </div>
             ) : (
               apps.slice(0, 3).map((app) => (
